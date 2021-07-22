@@ -1,6 +1,6 @@
 NAME 	= vector
 
-SRCS	=	main.cpp
+SRCS	=	main.cpp 
 
 OBJS 	= $(SRCS:.cpp=.o)
 

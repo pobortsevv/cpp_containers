@@ -1,14 +1,17 @@
 #include <iostream>
 #include <vector>
+#include "ft_vector.hpp"
 #include <map>
 
 int main(void)
 {
-	std::vector<int> vect;
-	std::cout << "Hello World!" << std::endl;
-	std::allocator<int> al;
-	std::allocator_traits<std::allocator<int> > tr;
-773323860595
-	tr.allocate(al, 1);
+	ft::vector<int> vect;
+	vect.push_back(1);
+	vect.push_back(1);
+	vect.push_back(1);
+	vect.push_back(1);
+	vect.push_back(1);
+	vect.push_back(1);
+	std::cout << vect.size() << std::endl;
 	return 0;
 }
