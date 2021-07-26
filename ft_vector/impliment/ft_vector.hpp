@@ -10,6 +10,7 @@
 # include <memory>
 # include <__debug>
 # include "generics.hpp"
+# include "iterator.hpp"
 
 /* -------------------------------------------------------------------------- */
 
@@ -34,7 +35,7 @@ namespace ft {
 			// typedef const_pointer const_iterator;
 			/* -------------------------------------------------------------------------- */
 
-			typedef size_t size_type;
+			typedef std::size_t size_type;
 			typedef signed int difference_type;
 
 			pointer _begin;
@@ -150,7 +151,7 @@ namespace ft {
 			/* -------------------------------------------------------------------------- */
 
 			/* -------------------------------- Modifiers ------------------------------- */
-			void push_back (const value_type & val)
+			void push_back(const value_type & val)
 			{
 				if (this->_sz < this->_cap)
 				{
