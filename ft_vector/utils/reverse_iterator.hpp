@@ -38,8 +38,8 @@ namespace ft {
 			inline this_type operator++(int) {this_type tmp(*this); --(this->_i); return tmp;}
 			inline this_type &operator--(void) {++this->_i; return *this;}
 			inline this_type operator--(int) {this_type tmp(*this); ++(this->_i); return tmp;}
-			inline this_type &operator+=(difference_type n) {this->_i - n; return *this;}
-			inline this_type &operator-=(difference_type n) {this->_i + n; return *this;}
+			inline this_type &operator+=(difference_type n) {this->_i -= n; return *this;}
+			inline this_type &operator-=(difference_type n) {this->_i += n; return *this;}
 			inline this_type operator+(difference_type n) const {this_type tmp(*this); tmp -= n; return tmp;}
 			inline this_type operator-(difference_type n) const {this_type tmp(*this); tmp += n; return tmp;}
 
