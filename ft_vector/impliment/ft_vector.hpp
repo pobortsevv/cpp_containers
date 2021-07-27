@@ -11,6 +11,7 @@
 # include <__debug>
 # include "generics.hpp"
 # include "iterator.hpp"
+# include "reverse_iterator.hpp"
 
 /* -------------------------------------------------------------------------- */
 
@@ -24,16 +25,15 @@ namespace ft {
 			typedef Allocator				allocator_type;
 		public:
 			// Name requirements for c++ container:
-			typedef T			value_type;
-			typedef T&			reference;
-			typedef const T&	const_reference;
-			typedef	typename allocator_type::pointer	pointer;
-			typedef typename allocator_type::const_pointer const_pointer;
-
-			/* ---------- Разобрать как работают итераторы и как их реализовать --------- */
-			// typedef pointer		iterator;
-			// typedef const_pointer const_iterator;
-			/* -------------------------------------------------------------------------- */
+			typedef T										value_type;
+			typedef T&										reference;
+			typedef const T&								const_reference;
+			typedef	typename allocator_type::pointer		pointer;
+			typedef typename allocator_type::const_pointer	const_pointer;
+			typedef wrap_iter<pointer>						iterator;
+			typedef wrap_iter<const_pointer>				const_iterator;
+			typedef reverse_wrap_iter<iterator>				reverse_iterator;
+			typedef reverse_wrap_iter<const_iterator>		const_reverse_iterator;
 
 			typedef std::size_t size_type;
 			typedef signed int difference_type;
@@ -74,6 +74,37 @@ namespace ft {
 				this->_begin = nullptr;
 			}
 
+			/* -------------------------------------------------------------------------- */
+
+			/* -------------------------------- Iterators ------------------------------- */
+			iterator	begin(void) {return iterator(this->_begin);}
+			iterator	end(void) {return iterator(this->_begin + this->_sz);}
+			const_iterator begin(void) const {return const_iterator(this->_begin);}
+			const_iterator end(void) const {return const_iterator(this->_begin + this->_sz);}
+			reverse_iterator	rbegin(void) 
+			{
+				if (this->_sz == 0)
+					return reverse_iterator(iterator(this->_begin));
+				return reverse_iterator(iterator(this->_begin + this->_sz - 1));
+			}
+			reverse_iterator	rend(void) 
+			{
+				if (this->_sz == 0)
+					return reverse_iterator(iterator(this->_begin));
+				return reverse_iterator(iterator(this->_begin - 1));
+			}
+			const_reverse_iterator	rbegin(void) const
+			{
+				if (this->_sz == 0)
+					return const_reverse_iterator(const_iterator(this->_begin));
+				return const_reverse_iterator(const_iterator(this->_begin + this->_sz - 1));
+			}
+			const_reverse_iterator	rend(void) const
+			{
+				if (this->_sz == 0)
+					return const_reverse_iterator(const_iterator(this->_begin));
+				return const_reverse_iterator(const_iterator(this->_begin - 1));
+			}
 			/* -------------------------------------------------------------------------- */
 
 			/* -------------------------------- Capacity -------------------------------- */

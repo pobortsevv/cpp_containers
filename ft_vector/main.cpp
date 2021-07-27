@@ -12,7 +12,9 @@ int main(void)
 	vect.push_back(4);
 	vect.push_back(5);
 	vect.push_back(6);
-	vect.pop_back();
+	ft::vector<int>::reverse_iterator it(vect.rbegin());
+	for (;it != vect.rend(); it++)
+		std::cout << *it << std::endl;
 
 	std::vector<int> std_vect;
 	std_vect.push_back(1);
@@ -23,12 +25,7 @@ int main(void)
 	std_vect.push_back(6);
 	std_vect.pop_back();
 
-	ft::vector<int> an_vect;
-	an_vect.push_back(21);
-
-	vect.clear();
-
-	std::cout << "std: " << an_vect.size() << std::endl;
+	std::cout << "std: " << std_vect.size() << std::endl;
 	std::cout << "my: " << vect.size() << std::endl;
 	return 0;
 }
