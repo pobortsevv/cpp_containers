@@ -10,10 +10,11 @@
 # include <memory>
 # include <algorithm>
 # include <cstring>
+# include <climits>
 # include <__debug>
-# include "generics.hpp"
-# include "iterator.hpp"
-# include "reverse_iterator.hpp"
+# include "../utils/generics.hpp"
+# include "../utils/iterator.hpp"
+# include "../utils/reverse_iterator.hpp"
 
 /* -------------------------------------------------------------------------- */
 
@@ -49,7 +50,8 @@ namespace ft {
 			explicit vector (const allocator_type & alloc = allocator_type()) 
 				: _begin(nullptr), _alloc(alloc), _cap(EMPTY), _sz(EMPTY)
 			{}
-			explicit vector(size_type n, const value_type& val = value_type(), const allocator_type& alloc = allocator_type())
+			explicit vector (size_type n, const value_type& val = value_type(),
+				const allocator_type& alloc = allocator_type())
 				: _alloc(alloc), _cap(n), _sz(n)
 			{
 				this->_begin = this->_alloc.allocate(n);
@@ -57,7 +59,8 @@ namespace ft {
 					this->_alloc.construct(this->_begin + i, val);
 			}
 			template <class InputIterator>
-			explicit vector (InputIterator first, InputIterator last, const allocator_type& alloc = allocator_type())
+			explicit vector (InputIterator first, InputIterator last, const allocator_type& alloc = allocator_type(),
+				typename ft::enable_if<!std::numeric_limits<InputIterator>::is_specialized>::type* = 0)
 				: _alloc(alloc), _cap(last - first), _sz(last - first)
 			{
 				difference_type diff = last - first;
@@ -98,6 +101,19 @@ namespace ft {
 				this->_sz = 0;
 				this->_cap = 0;
 				this->_begin = nullptr;
+			}
+			vector const & operator=(vector const & rhs)
+			{
+				if (this == &rhs)
+					return *this;
+				this->~vector();
+				this->_alloc = rhs.get_allocator();
+				this->_begin = this->_alloc.allocate(rhs.capacity());
+				for (size_type i = 0; i < rhs.size(); i++)
+					this->_alloc.construct(this->_begin + i, rhs[i]);
+				this->_cap = rhs.capacity();
+				this->_sz = rhs.size();
+				return *this;
 			}
 
 			/* -------------------------------------------------------------------------- */
@@ -236,7 +252,8 @@ namespace ft {
 
 			/* -------------------------------- Modifiers ------------------------------- */
 			template <class InputIterator>
-			void assign(InputIterator first, InputIterator last) // range
+			void assign(InputIterator first, InputIterator last, 
+				typename ft::enable_if<!std::numeric_limits<InputIterator>::is_specialized>::type* = 0) // range
 			{
 				difference_type diff = last - first;
 				if (diff < 0)
@@ -246,7 +263,7 @@ namespace ft {
 				}
 				for (size_type i = 0; i < this->_sz; i++)
 					this->_alloc.destroy(this->_begin + i);
-				if (diff > this->_cap)
+				if (last - first > static_cast<difference_type>(this->_cap))
 				{
 					this->_alloc.deallocate(this->_begin, this->_cap);
 					this->_begin = this->_alloc.allocate(diff);
@@ -257,8 +274,9 @@ namespace ft {
 					this->_begin = this->_alloc.allocate(diff);
 					this->_cap = diff;
 				}
-				std::memmove(this->_begin, first, sizeof(value_type) * (diff));
 				this->_sz = diff;
+				for (size_type i = 0; i < this->_sz; i++)
+					this->_alloc.construct(this->_begin + i, first[i]);
 			}
 			void assign(size_type n, const value_type& val) // fill
 			{
@@ -277,8 +295,40 @@ namespace ft {
 				for (size_type i = 0; i < n; i++)
 					this->_alloc.construct(this->_begin + i, val);
 				this->_sz = n;
+				this->_cap = n;
 			}
-
+			iterator insert (iterator position, const value_type& val)
+			{
+				iterator pos = this->_begin + (position - begin());
+				if (this->_sz < this->_cap)
+				{
+					if (pos.base() == (this->_begin + this->_sz))
+						this->_alloc.construct(this->_begin + this->_sz, val);
+					else
+					{
+						vector tmp(pos, end());
+						std::copy(tmp.begin(), tmp.end(), pos + 1);
+						this->_alloc.destroy(position.base());
+						this->_alloc.construct(position.base(), val);
+					}
+				}
+				else
+				{
+					/* ------------------------- СДЕЛАТЬ НОМРАЛЬНО!!!!! ------------------------- */
+					// pointer new_begin = this->_alloc.allocate(this->_cap ? this->_cap * 2 : 1);
+					// for(size_type i = 0; this->_begin + i != position.base(); i++)
+					// 	this->_alloc.construct(new_begin + i, *(this->_begin + i));
+					// std::copy(position, end(), pos + 1);
+					// this->_alloc.construct(new_begin + position, val);
+					// for(size_type i = 0; i < this->_sz; i++)
+					// 	this->_alloc.destroy(this->_begin + i);
+					// this->_alloc.deallocate(this->_begin, this->_cap);
+					// this->_cap = this->_cap ? this->_cap * 2 : 1; 
+					// this->_begin = new_begin;
+				}
+				this->_sz++;
+				return iterator(this->_begin);
+			}
 			void push_back(const value_type & val)
 			{
 				if (this->_sz < this->_cap)

@@ -5,6 +5,8 @@
 // and the range they represent by using the members of the 
 // corresponding iterator_traits instantiation.
 
+# include <type_traits>
+
 namespace ft {
 	
 	template <class Iterator>
@@ -36,6 +38,9 @@ namespace ft {
 		typedef std::ptrdiff_t difference_type;
 		typedef std::random_access_iterator_tag iterator_category;
 	};
+
+	template<bool Cond, class T = void> struct enable_if {};
+	template<class T> struct enable_if<true, T> { typedef T type; };
 } 
 
 #endif
