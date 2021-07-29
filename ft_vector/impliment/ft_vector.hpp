@@ -315,39 +315,32 @@ namespace ft {
 				else
 				{
 					/* ------------------------- СДЕЛАТЬ НОМРАЛЬНО!!!!! ------------------------- */
-					// pointer new_begin = this->_alloc.allocate(this->_cap ? this->_cap * 2 : 1);
-					// for(size_type i = 0; this->_begin + i != position.base(); i++)
-					// 	this->_alloc.construct(new_begin + i, *(this->_begin + i));
-					// std::copy(position, end(), pos + 1);
-					// this->_alloc.construct(new_begin + position, val);
-					// for(size_type i = 0; i < this->_sz; i++)
-					// 	this->_alloc.destroy(this->_begin + i);
-					// this->_alloc.deallocate(this->_begin, this->_cap);
-					// this->_cap = this->_cap ? this->_cap * 2 : 1; 
-					// this->_begin = new_begin;
+					pointer new_begin = this->_alloc.allocate(this->_cap ? this->_cap * 2 : 1);
+					size_type old_index = 0;
+					size_type new_index = 0;
+					while (new_index < this->_sz + 1)
+					{
+						if (this->_begin + new_index == position.base())
+						{
+							this->_alloc.construct(new_begin + new_index, val);
+							new_index++;
+							continue;
+						}
+						this->_alloc.construct(new_begin + new_index, *(this->_begin + old_index));
+						this->_alloc.destroy(this->_begin + old_index);
+						new_index++;
+						old_index++;
+					}
+					this->_alloc.deallocate(this->_begin, this->_cap);
+					this->_cap = this->_cap ? this->_cap * 2 : 1; 
+					this->_begin = new_begin;
 				}
 				this->_sz++;
 				return iterator(this->_begin);
 			}
 			void push_back(const value_type & val)
 			{
-				if (this->_sz < this->_cap)
-				{
-					this->_alloc.construct(this->_begin + size(), val);
-					this->_sz++;	
-				}
-				else
-				{
-					pointer new_begin = this->_alloc.allocate(this->_cap ? this->_cap * 2 : 1);
-					memmove(new_begin, this->_begin, sizeof(value_type) * this->_sz);
-					this->_alloc.construct(new_begin + this->_cap, val);
-					for(size_type i = 0; i < this->_sz; i++)
-						this->_alloc.destroy(this->_begin + i);
-					this->_alloc.deallocate(this->_begin, this->_cap);
-					this->_cap = this->_cap ? this->_cap * 2 : 1; 
-					this->_sz++;
-					this->_begin = new_begin;
-				}
+				insert(end(), val);
 			}
 			void pop_back(void)
 			{

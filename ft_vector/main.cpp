@@ -14,19 +14,19 @@ int main(void)
 	// // std::vector<int> fifth (myints, myints + sizeof(myints) / sizeof(int) );
 
 	ft::vector<int> vect;
-	// vect.insert(vect.begin(), 21);
-	// vect.push_back(17);
-	// vect.push_back(2);
-	// vect.push_back(3);
-	// vect.push_back(4);
-	// vect.push_back(5);
-	// vect.push_back(6);
+
+	vect.push_back(2);
+	vect.push_back(3);
+	vect.push_back(4);
+	vect.push_back(5);
+	vect.push_back(6);
+	vect.insert(vect.begin() + 3, 21);
 	// // vect.resize(5);
 	// // vect.resize(8,100);
 	// // vect.resize(12);
-	// ft::vector<int>::iterator it(vect.begin());
-	// for (;it != vect.end(); it++)
-	// 	std::cout << *it << std::endl;
+	ft::vector<int>::iterator it(vect.begin());
+	for (;it != vect.end(); it++)
+		std::cout << *it << std::endl;
 	// vect.erase(it + 1);
 
 	// // ft::vector<int> third(vect.begin(),vect.end());  // iterating through second
