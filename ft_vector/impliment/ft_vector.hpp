@@ -151,12 +151,7 @@ namespace ft {
 
 			/* -------------------------------- Capacity -------------------------------- */
 			size_type size(void) const {return this->_sz;}
-			size_type max_size(void) const
-			{
-				size_type amax = this->_alloc.max_size();
-				// size_type nmax = numeric_limits<size_type>::max() / 2;
-				return amax;
-			}
+			size_type max_size(void) const {return this->_alloc.max_size();}
 			size_type capacity(void) const {return this->_cap;}
 			bool empty(void) const {return this->_sz == 0 ? true : false;}
 			void resize(size_type n, value_type val = value_type())
@@ -195,7 +190,8 @@ namespace ft {
 				if (n > this->_cap)
 				{
 					pointer new_begin = this->_alloc.allocate(n);
-					memmove(new_begin, this->_begin, sizeof(value_type) * this->_sz);
+					for (size_type i = 0; i < n; i++)
+						this->_alloc.construct(new_begin + i, this->_begin[i]);
 					for (size_type i = 0; i < this->_sz; i++)
 						this->_alloc.destroy(this->_begin + i);
 					this->_alloc.deallocate(this->_begin, this->_cap);
@@ -256,74 +252,45 @@ namespace ft {
 				typename ft::enable_if<!std::numeric_limits<InputIterator>::is_specialized>::type* = 0) // range
 			{
 				difference_type diff = last - first;
-				if (diff < 0)
-				{
-					this->~vector();
-					std::__throw_out_of_range("vector");
-				}
-				for (size_type i = 0; i < this->_sz; i++)
-					this->_alloc.destroy(this->_begin + i);
-				if (last - first > static_cast<difference_type>(this->_cap))
-				{
-					this->_alloc.deallocate(this->_begin, this->_cap);
-					this->_begin = this->_alloc.allocate(diff);
-					this->_cap = diff;
-				}
-				else if (this->_cap == 0)
-				{
-					this->_begin = this->_alloc.allocate(diff);
-					this->_cap = diff;
-				}
+				clear();
+				reserve(last - first);
+				std::copy(first, last, this->_begin);
 				this->_sz = diff;
-				for (size_type i = 0; i < this->_sz; i++)
-					this->_alloc.construct(this->_begin + i, first[i]);
 			}
 			void assign(size_type n, const value_type& val) // fill
 			{
-				if (n < 0)
-				{
-					this->~vector();
-					std::__throw_out_of_range("vector");
-				}
-				for (size_type i = 0; i < this->_sz; i++)
-					this->_alloc.destroy(this->_begin + i);
-				if (n > this->_cap)
-				{
-					this->_alloc.deallocate(this->_begin, this->_cap);
-					this->_begin = this->_alloc.allocate(n);
-				}
-				for (size_type i = 0; i < n; i++)
-					this->_alloc.construct(this->_begin + i, val);
-				this->_sz = n;
-				this->_cap = n;
+				clear();
+				reserve(n);
+				insert(begin(), n, val);
 			}
-			iterator insert (iterator position, const value_type& val)
+			template <class InputIterator>
+			void insert (iterator position, InputIterator first, InputIterator last,
+				typename ft::enable_if<!std::numeric_limits<InputIterator>::is_specialized>::type* = 0)
 			{
 				iterator pos = this->_begin + (position - begin());
-				if (this->_sz < this->_cap)
+				difference_type diff = last - first;
+				if (this->_sz + diff < this->_cap)
 				{
 					if (pos.base() == (this->_begin + this->_sz))
-						this->_alloc.construct(this->_begin + this->_sz, val);
+						std::copy(first, last, end());
 					else
 					{
 						vector tmp(pos, end());
-						std::copy(tmp.begin(), tmp.end(), pos + 1);
-						this->_alloc.destroy(position.base());
-						this->_alloc.construct(position.base(), val);
+						std::copy(tmp.begin(), tmp.end(), pos + diff);
+						std::copy(first, last, pos);
 					}
 				}
 				else
 				{
-					/* ------------------------- СДЕЛАТЬ НОМРАЛЬНО!!!!! ------------------------- */
 					pointer new_begin = this->_alloc.allocate(this->_cap ? this->_cap * 2 : 1);
 					size_type old_index = 0;
 					size_type new_index = 0;
-					while (new_index < this->_sz + 1)
+					while (new_index < this->_sz + diff)
 					{
 						if (this->_begin + new_index == position.base())
 						{
-							this->_alloc.construct(new_begin + new_index, val);
-							new_index++;
+							for (size_type i = 0; i < size_type(diff); i++, new_index++)
+								this->_alloc.construct(new_begin + new_index, *(first + i));
 							continue;
 						}
 						this->_alloc.construct(new_begin + new_index, *(this->_begin + old_index));
@@ -335,13 +302,20 @@ namespace ft {
 					this->_cap = this->_cap ? this->_cap * 2 : 1; 
 					this->_begin = new_begin;
 				}
-				this->_sz++;
-				return iterator(this->_begin);
+				this->_sz += diff;
 			}
-			void push_back(const value_type & val)
+			void insert (iterator position, size_type n, const value_type& val)
 			{
-				insert(end(), val);
+				ft::vector<value_type> newPart(n, val);
+				this->insert(position, newPart.begin(), newPart.end());
 			}
+			iterator insert (iterator position, const value_type& val)
+			{
+				size_type before = position - this->begin();
+				this->insert(position, 1, val);
+				return iterator(this->_begin + before);
+			}
+			void push_back(const value_type & val) {insert(end(), val);}
 			void pop_back(void)
 			{
 				_LIBCPP_ASSERT(!empty(), "vector::pop_back called for empty vector");

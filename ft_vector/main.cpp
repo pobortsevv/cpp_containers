@@ -3,6 +3,19 @@
 #include "ft_vector.hpp"
 #include <map>
 
+struct my 
+{
+	int _n;
+	my(int n) : _n(n)
+	{
+		std::cout << "Мы вызвали конструктор " << _n <<  std::endl;
+	}
+	~my(void)
+	{
+		std::cout << "Смэрть " << _n << std::endl;
+	}
+};
+
 int main(void)
 {
 	// ft::vector<int> first;                                // empty vector of ints
@@ -20,10 +33,11 @@ int main(void)
 	vect.push_back(4);
 	vect.push_back(5);
 	vect.push_back(6);
-	vect.insert(vect.begin() + 3, 21);
-	// // vect.resize(5);
-	// // vect.resize(8,100);
-	// // vect.resize(12);
+	// vect.insert (vect.end() -3,300);
+	vect.insert(vect.begin() + 2, 3, 200);
+	// // // vect.resize(5);
+	// // // vect.resize(8,100);
+	// // // vect.resize(12);
 	ft::vector<int>::iterator it(vect.begin());
 	for (;it != vect.end(); it++)
 		std::cout << *it << std::endl;
@@ -37,14 +51,13 @@ int main(void)
 	// 	std::cout << ' ' << *it;
 	// std::cout << '\n';
 	// std::vector<int> std_vect;
-	// // std_vect.push_back(1);
-	// // std_vect.push_back(2);
-	// // std_vect.push_back(3);
-	// // std_vect.push_back(4);
-	// // std_vect.push_back(5);
-	// // std_vect.push_back(6);
-	// std::vector<int>::iterator sti(std_vect.begin());
-	// std_vect.insert(sti + 2, 20);
+	// std_vect.push_back(2);
+	// std_vect.push_back(3);
+	// std_vect.push_back(4);
+	// std_vect.push_back(5);
+	// std_vect.push_back(6);
+	// // std_vect.assign(-1, 20);
+	// std_vect.insert (std_vect.begin() + 1,std_vect.begin() + 2, std_vect.begin() + 3);
 
 	// for (std::vector<int>::iterator it = std_vect.begin(); it != std_vect.end(); it++)
 	// 	std::cout << *it << std::endl;

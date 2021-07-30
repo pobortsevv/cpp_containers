@@ -15,7 +15,7 @@ all:
 %.o:    %.cpp
 	@$(CC) $(CFLAGS) $(INCLUDES)  -c $< -o $@
 
-$(NAME):	$(OBJS)
+$(NAME):	$(OBJS) 
 		@$(CC) $(OBJS) -o $(NAME)
 		@echo $(NAME) compiled!
 
