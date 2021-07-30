@@ -361,6 +361,30 @@ namespace ft {
 			allocator_type get_allocator(void) const {return this->_alloc;}
 			/* -------------------------------------------------------------------------- */
 	};
+
+	template <class T, class Alloc>
+	inline bool operator== (const ft::vector<T,Alloc>& lhs, const ft::vector<T,Alloc>& rhs)
+	{
+		if (lhs.size() == rhs.size())
+			return ft::equal(lhs.begin(), lhs.end(), rhs.begin());
+		return false;
+	}
+
+	template <class T, class Alloc>
+	inline bool operator!=(const ft::vector<T,Alloc>& lhs, const ft::vector<T,Alloc>& rhs) {return !(rhs == lhs);}
+
+	template <class T, class Alloc>
+	inline bool operator<(const ft::vector<T,Alloc>& lhs, const ft::vector<T,Alloc>& rhs)
+	{ return ft::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());}
+
+	template <class T, class Alloc>
+	inline bool operator>  (const ft::vector<T,Alloc>& lhs, const ft::vector<T,Alloc>& rhs) {return rhs < lhs;}
+
+	template <class T, class Alloc>
+	inline bool operator<= (const ft::vector<T,Alloc>& lhs, const ft::vector<T,Alloc>& rhs) {return !(rhs < lhs);}
+
+	template <class T, class Alloc>
+	inline bool operator>= (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs) {return !(lhs < rhs);}
 }
 /* -------------------------------------------------------------------------- */
 
