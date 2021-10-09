@@ -1,6 +1,6 @@
-NAME 	= vector
+NAME 	= test
 
-SRCS	=	main.cpp 
+SRCS	= main.cpp 
 
 OBJS 	= $(SRCS:.cpp=.o)
 
