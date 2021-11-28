@@ -21,11 +21,11 @@
 /* ------------------------------ FT Namespace ------------------------------ */
 namespace ft {
 
-	template <typename T, typename Allocator = std::allocator<T> >
+	template <typename T, typename Alloc = std::allocator<T> >
 	class vector 
 	{
 		private:
-			typedef Allocator				allocator_type;
+			typedef Alloc									allocator_type;
 		public:
 			// Name requirements for c++ container:
 			typedef T										value_type;

@@ -26,6 +26,7 @@ int main(void)
 	hello.insert(2, 2);
 	hello.insert(-1, -1);
 	hello.delete_(2);
+	std::map<int, int> k;
 
 
 	std::cout << *hello.min() << std::endl;
