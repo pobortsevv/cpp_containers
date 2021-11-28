@@ -41,6 +41,9 @@ namespace ft {
 	class LLRB
 	{
 		private:
+			typedef Key* key_pointer;
+			typedef Value* value_pointer;
+
 			struct Node
 			{
 				Key _key;
@@ -70,33 +73,33 @@ namespace ft {
 		
 			/* ------------------------------ Help methods ------------------------------ */
 		public:
-			Key min()
+			key_pointer min()
 			{
 				pointer node = this->_root;
-				while(node != nullptr)
+				while(node->_left != nullptr)
 					node = node->_left;
 				if (node == nullptr)
 					return NULL;
-				return node->_key;
+				return &node->_key;
 			}
 
-			Key min(pointer node)
+			key_pointer min(pointer node)
 			{
 				pointer tmp = node;
-				while(tmp != nullptr)
+				while(tmp->_left != nullptr)
 					tmp = tmp->_left;
 				if (tmp == nullptr)
 					return 0;
-				return tmp->_key;	
+				return &tmp->_key;	
 			}
 			
-			Value get(Key key)
+			value_pointer get(Key key)
 			{
 				pointer tmp = this->_root;
 				while(tmp != nullptr)
 				{
 					if (key == tmp->_key)
-						return tmp->_value;
+						return &tmp->_value;
 					else if (key < tmp->_key)
 						tmp = tmp->_left;
 					else
@@ -105,13 +108,13 @@ namespace ft {
 				return NULL;
 			}
 
-			Value get(pointer node, Key key)
+			value_pointer get(pointer node, Key key)
 			{
 				pointer tmp = node;
 				while(tmp != nullptr)
 				{
 					if (key == tmp->_key)
-						return tmp->_value;
+						return &tmp->_value;
 					else if (key < tmp->_key)
 						tmp = tmp->_left;
 					else
@@ -192,13 +195,13 @@ namespace ft {
 			/* -------------------------------------------------------------------------- */
 		public:
 			/* --------------------------------- Search --------------------------------- */
-			Value search(Key key)
+			value_pointer search(Key key)
 			{
 				pointer node = this->_root;
 				while (node != nullptr)
 				{
 					if (key == node->_key)
-						return node->_value;
+						return &node->_value;
 					else if (key < node->_key) 
 						node = node->_left;
 					else if (key > node->_key)
@@ -220,8 +223,8 @@ namespace ft {
 			{
 				if (unit == nullptr)
 					return new Node(key, value);
-           		if (isRed(unit->_left) && isRed(unit->_right))
-				   colorFlip(unit);
+				if (isRed(unit->_left) && isRed(unit->_right))
+					colorFlip(unit);
 				if (key == unit->_key)
 					unit->_value = value;
 				else if (key < unit->_key)
@@ -230,10 +233,10 @@ namespace ft {
 					unit->_right = insert(unit->_right, key, value);
 
 				// Balancing by rotating
-           		if (isRed(unit->_right) && isRed(unit->_left) == false)
-				   unit = rotateLeft(unit);
-           		if (isRed(unit->_left) && isRed(unit->_left->_left))
-				   unit = rotateRight(unit);
+				if (isRed(unit->_right) && isRed(unit->_left) == false)
+					unit = rotateLeft(unit);
+				if (isRed(unit->_left) && isRed(unit->_left->_left))
+					unit = rotateRight(unit);
 				
 				return unit;
 			}
@@ -285,8 +288,8 @@ namespace ft {
 						unit = moveRedRight(unit);
 					if (key == unit->_key)
 					{
-						unit->_key = min(unit->_right);
-						unit->_value = get(unit->_right, unit->_key);
+						unit->_key = *min(unit->_right);
+						unit->_value = *get(unit->_right, unit->_key);
 						unit->_right = deleteMin(unit->_right);
 					}
 					else
