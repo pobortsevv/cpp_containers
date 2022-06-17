@@ -4,16 +4,14 @@
 namespace ft {
 
 	template<typename T>
-	void swap(T & lhs, T & rhs)
-	{
+	void swap(T & lhs, T & rhs) {
 		T buf(rhs);
 		rhs = lhs;
 		lhs = buf;
 	}
 
 	template<class T1, class T2>
-	struct pair
-	{
+	struct pair {
 		typedef T1 first_type;
 		typedef T2 second_type;
 
@@ -24,23 +22,20 @@ namespace ft {
 		pair(first_type const &t1, second_type const &t2) : first(t1), second(t2) {}
 		template<class U1, class U2>
 		pair(ft::pair<U1, U2> const &p) : first(p.first), second(p.second) {} 
-		pair &operator=(pair const& p)
-		{
+		pair &operator=(pair const& p) {
 			this->first = p.first;
 			this->second = p.second;
 			return *this;
 		}
 
-		void swap(ft::pair<first_type, second_type> &p)
-		{
+		void swap(ft::pair<first_type, second_type> &p) {
 			swap(this->first, p.first);
 			swap(this->second, p.second);
 		}
 	};
 	
 	template<class T1, class T2>
-	ft::pair<T1, T2> make_pair(T1 x, T2 y)
-	{
+	ft::pair<T1, T2> make_pair(T1 x, T2 y) {
 		return pair<T1, T2>(x, y);
 	}
 }

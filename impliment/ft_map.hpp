@@ -20,8 +20,7 @@ namespace ft {
 	typename T,
 	typename Compare = std::less<Key>,
 	typename Alloc = std::allocator<pair<const Key,T> > >
-	class map
-	{
+	class map {
 		private:
 			typedef Alloc				allocator_type;
 		private:

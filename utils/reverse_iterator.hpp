@@ -6,8 +6,7 @@
 namespace ft {
 
 	template < class Iter>
-	class reverse_wrap_iter
-	{
+	class reverse_wrap_iter {
 		public:
 			typedef Iter														iterator_type;
 			typedef typename iterator_traits<iterator_type>::iterator_category 	iterator_category;
@@ -24,8 +23,7 @@ namespace ft {
 			reverse_wrap_iter(this_type const &x) : _i(x.base()) {} // copy
 			virtual ~reverse_wrap_iter(void) {}
 
-			this_type & operator=(this_type const & rhs)
-			{
+			this_type & operator=(this_type const & rhs) {
 				if (this == &rhs)
 					return *this;
 				this->_i = rhs.base();
@@ -50,54 +48,44 @@ namespace ft {
 	# define REVERSE_TYPE_TEMPLATE reverse_wrap_iter<Iter>
 
 	REVERSE_WRAP_TEMPLATE
-	inline bool operator==(REVERSE_TYPE_TEMPLATE const & lhs, REVERSE_TYPE_TEMPLATE const & rhs)
-	{
+	inline bool operator==(REVERSE_TYPE_TEMPLATE const & lhs, REVERSE_TYPE_TEMPLATE const & rhs) {
 		return lhs.base() == rhs.base();
 	}
 	REVERSE_WRAP_TEMPLATE
-	inline bool operator!=(REVERSE_TYPE_TEMPLATE const & lhs, REVERSE_TYPE_TEMPLATE const & rhs)
-	{
+	inline bool operator!=(REVERSE_TYPE_TEMPLATE const & lhs, REVERSE_TYPE_TEMPLATE const & rhs) {
 		return lhs.base() != rhs.base();
 	}
 	REVERSE_WRAP_TEMPLATE
-	inline bool operator>(REVERSE_TYPE_TEMPLATE const & lhs, REVERSE_TYPE_TEMPLATE const & rhs)
-	{
+	inline bool operator>(REVERSE_TYPE_TEMPLATE const & lhs, REVERSE_TYPE_TEMPLATE const & rhs) {
 		return lhs.base() < rhs.base();
 	}
 	REVERSE_WRAP_TEMPLATE
-	inline bool operator<(REVERSE_TYPE_TEMPLATE const & lhs, REVERSE_TYPE_TEMPLATE const & rhs)
-	{
+	inline bool operator<(REVERSE_TYPE_TEMPLATE const & lhs, REVERSE_TYPE_TEMPLATE const & rhs) {
 		return lhs.base() > rhs.base();
 	}
 	REVERSE_WRAP_TEMPLATE
-	inline bool operator>=(REVERSE_TYPE_TEMPLATE const & lhs, REVERSE_TYPE_TEMPLATE const & rhs)
-	{
+	inline bool operator>=(REVERSE_TYPE_TEMPLATE const & lhs, REVERSE_TYPE_TEMPLATE const & rhs) {
 		return lhs.base() <= rhs.base();
 	}
 	REVERSE_WRAP_TEMPLATE
-	inline bool operator<=(REVERSE_TYPE_TEMPLATE const & lhs, REVERSE_TYPE_TEMPLATE const & rhs)
-	{
+	inline bool operator<=(REVERSE_TYPE_TEMPLATE const & lhs, REVERSE_TYPE_TEMPLATE const & rhs) {
 		return lhs.base() >= rhs.base();
 	}
 	REVERSE_WRAP_TEMPLATE
-	inline typename REVERSE_TYPE_TEMPLATE::difference_type operator-(REVERSE_TYPE_TEMPLATE const & lhs, REVERSE_TYPE_TEMPLATE const & rhs)
-	{
+	inline typename REVERSE_TYPE_TEMPLATE::difference_type operator-(REVERSE_TYPE_TEMPLATE const & lhs, REVERSE_TYPE_TEMPLATE const & rhs) {
 		return rhs.base() - lhs.base();
 	}
 	REVERSE_WRAP_TEMPLATE
-	inline typename REVERSE_TYPE_TEMPLATE::difference_type operator+(REVERSE_TYPE_TEMPLATE const & lhs, REVERSE_TYPE_TEMPLATE const & rhs)
-	{
+	inline typename REVERSE_TYPE_TEMPLATE::difference_type operator+(REVERSE_TYPE_TEMPLATE const & lhs, REVERSE_TYPE_TEMPLATE const & rhs) {
 		return rhs.base() + lhs.base();
 	}
 	REVERSE_WRAP_TEMPLATE
-	inline REVERSE_TYPE_TEMPLATE operator+(typename REVERSE_TYPE_TEMPLATE::difference_type n, REVERSE_TYPE_TEMPLATE const & rhs)
-	{
+	inline REVERSE_TYPE_TEMPLATE operator+(typename REVERSE_TYPE_TEMPLATE::difference_type n, REVERSE_TYPE_TEMPLATE const & rhs) {
 		rhs -= n;
 		return rhs;
 	}
 	REVERSE_WRAP_TEMPLATE
-	inline REVERSE_TYPE_TEMPLATE operator-(typename REVERSE_TYPE_TEMPLATE::difference_type n, REVERSE_TYPE_TEMPLATE const & rhs)
-	{
+	inline REVERSE_TYPE_TEMPLATE operator-(typename REVERSE_TYPE_TEMPLATE::difference_type n, REVERSE_TYPE_TEMPLATE const & rhs) {
 		rhs += n;
 		return rhs;
 	}

@@ -6,21 +6,17 @@
 #include <bitset>
 
 
-struct my 
-{
+struct my {
 	int _n;
-	my(int n) : _n(n)
-	{
+	my(int n) : _n(n) {
 		std::cout << "Мы вызвали конструктор " << _n <<  std::endl;
 	}
-	~my(void)
-	{
+	~my(void) {
 		std::cout << "Смэрть " << _n << std::endl;
 	}
 };
 
-int main(void)
-{
+int main(void) {
 	ft::LLRB<int, int> hello(1, 1);
 
 	hello.insert(2, 2);

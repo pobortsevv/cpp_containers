@@ -38,14 +38,12 @@
 namespace ft {
 
 	template <typename Key, typename Value>
-	class LLRB
-	{
+	class LLRB {
 		private:
 			typedef Key* key_pointer;
 			typedef Value* value_pointer;
 
-			struct Node
-			{
+			struct Node {
 				Key _key;
 				Value _value;
 				Node * _left;
@@ -53,8 +51,7 @@ namespace ft {
 				std::bitset<1> _color;
 				public:
 					Node() : _key(), _value(), _left(nullptr), _right(nullptr), _color(RED) {}
-					Node(Key key, Value value) : _key(key), _value(value), _left(nullptr), _right(nullptr)
-					{
+					Node(Key key, Value value) : _key(key), _value(value), _left(nullptr), _right(nullptr) {
 						this->_color = RED; // new nodes are always red
 					} 
 			};
@@ -64,8 +61,7 @@ namespace ft {
 			pointer _root;
 		public:
 			LLRB() : _root(nullptr) {}
-			explicit LLRB(Key key, Value value)
-			{
+			explicit LLRB(Key key, Value value) {
 				this->_root = new Node(key, value);
 			}
 			// Будет дополняться другими конструкторами
@@ -73,8 +69,7 @@ namespace ft {
 		
 			/* ------------------------------ Help methods ------------------------------ */
 		public:
-			key_pointer min()
-			{
+			key_pointer min() {
 				pointer node = this->_root;
 				while(node->_left != nullptr)
 					node = node->_left;
@@ -83,8 +78,7 @@ namespace ft {
 				return &node->_key;
 			}
 
-			key_pointer min(pointer node)
-			{
+			key_pointer min(pointer node) {
 				pointer tmp = node;
 				while(tmp->_left != nullptr)
 					tmp = tmp->_left;
@@ -93,11 +87,9 @@ namespace ft {
 				return &tmp->_key;	
 			}
 			
-			value_pointer get(Key key)
-			{
+			value_pointer get(Key key) {
 				pointer tmp = this->_root;
-				while(tmp != nullptr)
-				{
+				while(tmp != nullptr) {
 					if (key == tmp->_key)
 						return &tmp->_value;
 					else if (key < tmp->_key)
@@ -108,11 +100,9 @@ namespace ft {
 				return NULL;
 			}
 
-			value_pointer get(pointer node, Key key)
-			{
+			value_pointer get(pointer node, Key key) {
 				pointer tmp = node;
-				while(tmp != nullptr)
-				{
+				while(tmp != nullptr) {
 					if (key == tmp->_key)
 						return &tmp->_value;
 					else if (key < tmp->_key)
@@ -123,8 +113,7 @@ namespace ft {
 				return NULL;
 			}
 		private:
-			inline bool isRed(pointer node) 
-			{
+			inline bool isRed(pointer node) {
 				if (node == nullptr)
 					return false;
 				return node->_color == RED ? true : false; 
@@ -133,8 +122,7 @@ namespace ft {
 			/* -------------------------------------------------------------------------- */
 
 			/* ---------------------- Node rotations and color flip --------------------- */
-			pointer rotateLeft(pointer unit)
-			{
+			pointer rotateLeft(pointer unit) {
 				pointer balanced = unit->_right;
 				unit->_right = balanced->_left;
 				balanced->_left = unit;
@@ -143,8 +131,7 @@ namespace ft {
 				return balanced;
 			}
 
-			pointer rotateRight(pointer unit)
-			{
+			pointer rotateRight(pointer unit) {
 				pointer balanced = unit->_left;
 				unit->_left= balanced->_right;
 				balanced->_right= unit;
@@ -153,37 +140,31 @@ namespace ft {
 				return balanced;
 			}
 
-			void colorFlip(pointer unit)
-			{
+			void colorFlip(pointer unit) {
 				flipColor(unit);
 				flipColor(unit->_left);
 				flipColor(unit->_right);
 			}
 
-			pointer moveRedLeft(pointer unit)
-			{
+			pointer moveRedLeft(pointer unit) {
 				colorFlip(unit);
-				if (isRed(unit->_right->_left))
-				{
+				if (isRed(unit->_right->_left)) {
 					unit->_right = rotateRight(unit->_right);
 					unit = rotateLeft(unit);
 					colorFlip(unit);
 				}
 				return unit;
 			}
-			pointer moveRedRight(pointer unit)
-			{
+			pointer moveRedRight(pointer unit) {
 				colorFlip(unit);
-				if (isRed(unit->_left->_left))
-				{
+				if (isRed(unit->_left->_left)) {
 					unit = rotateRight(unit);
 					colorFlip(unit);
 				}
 				return unit;
 			}
 
-			pointer fixUp(pointer unit)
-			{
+			pointer fixUp(pointer unit) {
 				if (isRed(unit->_right))
 					unit = rotateLeft(unit);
 				if (isRed(unit->_left) && isRed(unit->_left->_left))
@@ -195,11 +176,9 @@ namespace ft {
 			/* -------------------------------------------------------------------------- */
 		public:
 			/* --------------------------------- Search --------------------------------- */
-			value_pointer search(Key key)
-			{
+			value_pointer search(Key key) {
 				pointer node = this->_root;
-				while (node != nullptr)
-				{
+				while (node != nullptr) {
 					if (key == node->_key)
 						return &node->_value;
 					else if (key < node->_key) 
@@ -212,15 +191,13 @@ namespace ft {
 			/* -------------------------------------------------------------------------- */
 
 			/* --------------------------------- Insert --------------------------------- */
-			void insert(Key key, Value value)
-			{
+			void insert(Key key, Value value) {
 				this->_root = insert(this->_root, key, value);
 				this->_root->_color = BLACK;
 			}
 
 		private : 
-			pointer insert(pointer unit, Key key, Value value)
-			{
+			pointer insert(pointer unit, Key key, Value value) {
 				if (unit == nullptr)
 					return new Node(key, value);
 				if (isRed(unit->_left) && isRed(unit->_right))
@@ -245,22 +222,19 @@ namespace ft {
 			/* --------------------------------- Delete --------------------------------- */
 		public:
 
-			void deleteMin()
-			{
+			void deleteMin() {
 				this->_root = deleteMin(this->_root);
 				this->_root.color = BLACK;
 			}
 
-			void delete_(Key key)
-			{
+			void delete_(Key key) {
 				this->_root = delete_(this->_root, key);
 				this->_root->_color = BLACK;
 			}
 			
 		private:
 
-			pointer deleteMin(pointer unit)
-			{
+			pointer deleteMin(pointer unit) {
 				if (unit->_left == nullptr)
 					return nullptr;
 				if (isRed(unit->_left) == false && isRed(unit->_left->_left) == false)
@@ -270,29 +244,23 @@ namespace ft {
 				return fixUp(unit);
 			}
 
-			pointer delete_(pointer unit, Key key)
-			{
-				if (key < unit->_key)
-				{
+			pointer delete_(pointer unit, Key key) {
+				if (key < unit->_key) {
 					if (isRed(unit->_left) == false && isRed(unit->_left->_left))
 						unit = moveRedLeft(unit);
 					unit->_left = delete_(unit->_left, key);
-				}
-				else
-				{
+				} else {
 					if (isRed(unit->_left))
 						unit = rotateRight(unit);
 					if (key == unit->_key && unit->_right == nullptr)
 						return NULL;
 					if (isRed(unit->_right) == false && isRed(unit->_right->_left) == false)
 						unit = moveRedRight(unit);
-					if (key == unit->_key)
-					{
+					if (key == unit->_key) {
 						unit->_key = *min(unit->_right);
 						unit->_value = *get(unit->_right, unit->_key);
 						unit->_right = deleteMin(unit->_right);
-					}
-					else
+					} else
 						unit->_right = delete_(unit->_right, key);
 				}
 				return fixUp(unit);
