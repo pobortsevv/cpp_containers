@@ -1,5 +1,5 @@
-#ifndef GENERICS_HPP
-# define GENERICS_HPP
+#ifndef UTILITY_HPP
+# define UTILITY_HPP
 
 namespace ft {
 	template<typename T>
@@ -81,75 +81,60 @@ namespace ft {
 	// The type used as a compile-time boolean with false value.
     typedef integral_constant<bool, false> false_type;
 
-    template<bool B, class T = void>
-    struct enable_if {};
+	// If B is true, std::enable_if has a public member typedef type, equal to T; otherwise, there is no member typedef.
+	// This metafunction is a convenient way to leverage SFINAE prior to C++20's concepts, in particular for conditionally 
+	// removing functions from the candidate set based on type traits, allowing separate function overloads or specializations based on those different type traits.
+	//
+	// (Аббревиатура SFINAE расшифровывается как substitution failure is not an error и означает следующее: 
+	// при определении перегрузок функции ошибочные инстанциации шаблонов не вызывают ошибку компиляции, 
+	// а отбрасываются из списка кандидатов на наиболее подходящую перегрузку.)
+    template<bool B, class T = void> struct enable_if {};
 
-    template<class T>
-    struct enable_if<true, T> {
-        typedef T type;
-    };
+    template<class T> struct enable_if<true, T> { typedef T type; };
 
-    template<typename>
-    struct is_integral_helper : public false_type {};
+    template<typename> struct is_integral_helper : public false_type {};
 
-    template<>
-    struct is_integral_helper<bool> : public true_type {};
+    template<> struct is_integral_helper<bool> : public true_type {};
 
-    template<>
-    struct is_integral_helper<char> : public true_type {};
+    template<> struct is_integral_helper<char> : public true_type {};
 
-    template<>
-    struct is_integral_helper<signed char> : public true_type {};
+    template<> struct is_integral_helper<signed char> : public true_type {};
 
-    template<>
-    struct is_integral_helper<unsigned char> : public true_type {};
+    template<> struct is_integral_helper<unsigned char> : public true_type {};
 
 	#ifdef _GLIBCXX_USE_WCHAR_T
-    template<>
-        struct is_integral_helper<wchar_t>: public true_type { };
+    template<> struct is_integral_helper<wchar_t>: public true_type { };
 	#endif
 
     template<>
     struct is_integral_helper<char16_t> : public true_type {};
 
-    template<>
-    struct is_integral_helper<char32_t> : public true_type {
-    };
+    template<> struct is_integral_helper<char32_t> : public true_type {};
 
-    template<>
-    struct is_integral_helper<short> : public true_type {};
+    template<> struct is_integral_helper<short> : public true_type {};
 
-    template<>
-    struct is_integral_helper<unsigned short> : public true_type {};
+    template<> struct is_integral_helper<unsigned short> : public true_type {};
 
-    template<>
-    struct is_integral_helper<int> : public true_type {};
+    template<> struct is_integral_helper<int> : public true_type {};
 
-    template<>
-    struct is_integral_helper<unsigned int> : public true_type {};
+    template<> struct is_integral_helper<unsigned int> : public true_type {};
 
-    template<>
-    struct is_integral_helper<long> : public true_type {};
+    template<> struct is_integral_helper<long> : public true_type {};
 
-    template<>
-    struct is_integral_helper<unsigned long> : public true_type {};
+    template<> struct is_integral_helper<unsigned long> : public true_type {};
 
-    template<>
-    struct is_integral_helper<long long> : public true_type {};
+    // template<> struct is_integral_helper<long long> : public true_type {};
 
-    template<>
-    struct is_integral_helper<unsigned long long> : public true_type {};
+    // template<> struct is_integral_helper<unsigned long long> : public true_type {};
 
 	#if !defined(__STRICT_ANSI__) && defined(_GLIBCXX_USE_INT128)
-    template<>
-        struct is_integral_helper<__int128>: public true_type { };
+    template<> struct is_integral_helper<__int128>: public true_type { };
 
-    template<>
-        struct is_integral_helper<unsigned __int128>: public true_type { };
+    template<>  struct is_integral_helper<unsigned __int128>: public true_type { };
 	#endif
 
 	// Checks whether T is an integral type
-    template<typename T>
+    template<typename T> 
 	struct is_integral : public integral_constant<bool, (is_integral_helper<typename ft::remove_cv<T>::type>::value)> {};
 }
 

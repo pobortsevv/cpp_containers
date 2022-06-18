@@ -1,5 +1,5 @@
-#ifndef STACK_HPP
-# define STACK_HPP
+#ifndef FT_STACK_HPP
+# define FT_STACK_HPP
 
 /* --------------------------------- Headers -------------------------------- */
 # include "ft_vector.hpp"
@@ -12,13 +12,10 @@ namespace ft {
 			typedef T               value_type;
 			typedef Container       container_type;
 			typedef size_t          size_type;
-		private:
-			container_type  cont;
-			stack(const stack &ths);
-        	stack & operator=(const stack &ths);
-		public:
+
 			/* ------------------------------ Constructors ------------------------------ */
-			explicit stack(const container_type &container): cont(container) {}
+			explicit stack(const container_type &container = container_type()): cont(container) {}
+			stack(const stack &ths): cont(ths.cont) {}
 			~stack() {}
 			/* -------------------------------------------------------------------------- */
 
@@ -35,6 +32,8 @@ namespace ft {
 
 			void pop() { cont.pop_back(); }
 			/* -------------------------------------------------------------------------- */
+		private:
+			container_type  cont;
 	};
 
 	/* ------------------------------- Opertators ------------------------------- */
@@ -57,5 +56,4 @@ namespace ft {
 	bool operator>= (const stack<T,Container, Alloc>& lhs, const stack<T,Container, Alloc>& rhs) { return lhs >= rhs; }
 	/* -------------------------------------------------------------------------- */
 }
-
 #endif

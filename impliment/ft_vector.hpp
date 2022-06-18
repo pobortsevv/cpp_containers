@@ -8,6 +8,7 @@
 
 /* -------------------------------- Headers --------------------------------- */
 # include <memory>
+# include <iostream>
 # include <algorithm>
 # include <cstring>
 # include <climits>
@@ -74,7 +75,7 @@ namespace ft {
 					this->_alloc.construct(this->_begin + i, *(first + i));
 			}
 			explicit vector (const vector& x)
-				: _begin(nullptr), _alloc(x._alloc), _cap(x._cap), _sz(x.sz) {
+				: _begin(nullptr), _alloc(x._alloc), _cap(x._cap), _sz(x._sz) {
 				try
 				{
 					this->_alloc.allocate(x._cap);

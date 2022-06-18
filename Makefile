@@ -1,30 +1,47 @@
-NAME 	= test
+NAME = differ
 
-SRCS	= main.cpp 
+VECTOR_DIRECTORY = testing/vector
+MAP_DIRECTORY = testing/map
+STACK_DIRECTORY = testing/stack
 
-OBJS 	= $(SRCS:.cpp=.o)
+SCRIPT = test.sh
+LEAKS = leaks.sh
 
-CC 		= clang++
-RM		= rm -rf
-CFLAGS	= -Wall -Werror -Wextra -g -std=c++98 -pedantic
-INCLUDES = -I impliment -I utils
+VECTOR_LOGS = testing/vector/logs/*
+MAP_LOGS = testing/map/logs/*
+STACK_LOGS = testing/stack/logs/*
+
+LOG_DIRS = testing/*/logs
+
+RM = rm -rf
+SH = /bin/zsh
 
 all:
-	@$(MAKE) $(NAME) -j4
+	$(MAKE) $(NAME) -j4
 
-%.o:    %.cpp
-	@$(CC) $(CFLAGS) $(INCLUDES)  -c $< -o $@
+$(NAME):
+	$(SH) $(VECTOR_SCRIPT) $(MAP_SCRIPT) $(STACK_SCRIPT)
 
-$(NAME):	$(OBJS) 
-		@$(CC) $(OBJS) -o $(NAME)
-		@echo $(NAME) compiled!
+vector:
+	cd $(VECTOR_DIRECTORY) && $(SH) $(SCRIPT)
+
+vector_leaks:
+	cd $(VECTOR_DIRECTORY) && $(SH) $(LEAKS)
+
+map:
+	cd $(MAP_DIRECTORY) && $(SH) $(SCRIPT)
+
+map_leaks:
+	cd $(MAP_DIRECTORY) && $(SH) $(LEAKS)
+
+stack:
+	cd $(STACK_DIRECTORY) && $(SH) $(SCRIPT)
+
+stack_leaks:
+	cd $(STACK_DIRECTORY) && $(SH) $(LEAKS)
 
 clean:
-	@$(RM) $(OBJS)
-	@echo clean .o files
+	@$(RM) $(VECTOR_LOGS) $(MAP_LOGS) $(STACK_LOGS) $(LOG_DIRS)
+	@echo clean logs
 
-fclean: clean
-	@$(RM) $(NAME)
-	@echo $(NAME) removed!
-
-re:	fclean $(NAME)
+re:	clean $(NAME)

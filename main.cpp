@@ -1,31 +1,29 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   main.cpp                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: sabra <marvin@42.fr>                       +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/06/18 00:28:30 by sabra             #+#    #+#             */
+/*   Updated: 2022/06/18 00:28:32 by sabra            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include <iostream>
 #include <vector>
 #include "ft_vector.hpp"
 #include "red_black_tree.hpp"
+#include "testing.hpp"
 #include <map>
 #include <bitset>
 
-
-struct my {
-	int _n;
-	my(int n) : _n(n) {
-		std::cout << "Мы вызвали конструктор " << _n <<  std::endl;
-	}
-	~my(void) {
-		std::cout << "Смэрть " << _n << std::endl;
-	}
-};
-
 int main(void) {
-	ft::LLRB<int, int> hello(1, 1);
+	std::cout << "\n================FT================\n" << std::endl;
+	ft_stack_testing();
 
-	hello.insert(2, 2);
-	hello.insert(-1, -1);
-	hello.delete_(2);
-	std::map<int, int> k;
-
-
-	std::cout << *hello.min() << std::endl;
+	std::cout << "\n================STD================\n" << std::endl;
+	std_stack_testing();
 
 	return 0;
 }
