@@ -300,7 +300,7 @@ namespace ft {
 			iterator erase(iterator first, iterator last) {
 				iterator pos = this->_begin + (first - begin());
 				difference_type diff = last - first;
-				std::copy(last, this->_begin, pos);
+				std::copy(last, begin(), pos);
 				this->_sz -= diff;
 				return pos;
 			}

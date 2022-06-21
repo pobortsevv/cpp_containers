@@ -1322,7 +1322,6 @@ void const_iterators() {
 		++cit;
 	}
 	std::cout << std::endl;
-//	*cit = 6; // DOES NOT COMPILE
 
 	--cit;
 	ft::vector<const int>::const_iterator cit2(def.begin());
@@ -1338,7 +1337,6 @@ void const_iterators() {
 		++cit_src;
 	}
 	std::cout << std::endl;
-	// *cit_src = 6; // DOES NOT COMPILE
 }
 
 void reverse_iterators() {
@@ -1355,7 +1353,6 @@ void reverse_iterators() {
 		++rcit;
 	}
 	std::cout << std::endl;
-//	*rcit = 6; // DOES NOT COMPILE
 
 	--rcit;
 	ft::vector<const int>::const_reverse_iterator rcit2(def.rbegin());
@@ -1371,7 +1368,6 @@ void reverse_iterators() {
 		++rcit_src;
 	}
 	std::cout << std::endl;
-	// *rcit_src = 6; // DOES NOT COMPILE
 }
 
 void relational_operators() {

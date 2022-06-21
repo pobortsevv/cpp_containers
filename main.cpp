@@ -19,11 +19,6 @@
 #include <bitset>
 
 int main(void) {
-	std::cout << "\n================FT================\n" << std::endl;
-	ft_stack_testing();
-
-	std::cout << "\n================STD================\n" << std::endl;
-	std_stack_testing();
 
 	return 0;
 }

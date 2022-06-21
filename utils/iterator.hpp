@@ -5,7 +5,6 @@
 # include "traits.hpp"
 
 namespace ft {
-
 	template < class Iter>
 	class wrap_iter {
 		public:
@@ -21,7 +20,9 @@ namespace ft {
 		public:
 			wrap_iter(void) : _i(0) {} // default
 			wrap_iter(pointer x) : _i(x) {}
-			wrap_iter(this_type const &x) : _i(x.base()) {} // copy
+			template<class Up>
+			wrap_iter(const wrap_iter<Up>& x,
+            	typename enable_if<std::is_convertible<Up, iterator_type>::value>::type* = nullptr) : _i(x.base()) {} // copy
 			virtual ~wrap_iter(void) {this->_i = nullptr;}
 
 			this_type & operator=(this_type const & rhs) {
@@ -45,48 +46,49 @@ namespace ft {
 			inline pointer base(void) const {return this->_i;}
 	};
 
-	# define WRAP_TEMPLATE template < class Iter>
+	# define WRAP_TEMPLATE template<class Iter, class CIter>
 	# define TYPE_TEMPLATE wrap_iter<Iter>
+	# define CTYPE_TEPLATE wrap_iter<CIter>
 
 	WRAP_TEMPLATE
-	inline bool operator==(TYPE_TEMPLATE const & lhs, TYPE_TEMPLATE const & rhs) {
+	inline bool operator==(TYPE_TEMPLATE const & lhs, CTYPE_TEPLATE const & rhs) {
 		return lhs.base() == rhs.base();
 	}
 	WRAP_TEMPLATE
-	inline bool operator!=(TYPE_TEMPLATE const & lhs, TYPE_TEMPLATE const & rhs) {
+	inline bool operator!=(TYPE_TEMPLATE const & lhs, CTYPE_TEPLATE const & rhs) {
 		return !(lhs.base() == rhs.base());
 	}
 	WRAP_TEMPLATE
-	inline bool operator>(TYPE_TEMPLATE const & lhs, TYPE_TEMPLATE const & rhs) {
+	inline bool operator>(TYPE_TEMPLATE const & lhs, CTYPE_TEPLATE const & rhs) {
 		return lhs.base() > rhs.base();
 	}
 	WRAP_TEMPLATE
-	inline bool operator<(TYPE_TEMPLATE const & lhs, TYPE_TEMPLATE const & rhs) {
+	inline bool operator<(TYPE_TEMPLATE const & lhs, CTYPE_TEPLATE const & rhs) {
 		return lhs.base() < rhs.base();
 	}
 	WRAP_TEMPLATE
-	inline bool operator>=(TYPE_TEMPLATE const & lhs, TYPE_TEMPLATE const & rhs) {
+	inline bool operator>=(TYPE_TEMPLATE const & lhs, CTYPE_TEPLATE const & rhs) {
 		return !(lhs.base() < rhs.base());
 	}
 	WRAP_TEMPLATE
-	inline bool operator<=(TYPE_TEMPLATE const & lhs, TYPE_TEMPLATE const & rhs) {
+	inline bool operator<=(TYPE_TEMPLATE const & lhs, CTYPE_TEPLATE const & rhs) {
 		return !(lhs.base() > rhs.base());
 	}
 	WRAP_TEMPLATE
-	inline typename TYPE_TEMPLATE::difference_type operator-(TYPE_TEMPLATE const & lhs, TYPE_TEMPLATE const & rhs) {
+	inline typename TYPE_TEMPLATE::difference_type operator-(TYPE_TEMPLATE const & lhs, CTYPE_TEPLATE const & rhs) {
 		return lhs.base() - rhs.base();
 	}
 	WRAP_TEMPLATE
-	inline typename TYPE_TEMPLATE::difference_type operator+(TYPE_TEMPLATE const & lhs, TYPE_TEMPLATE const & rhs) {
+	inline typename TYPE_TEMPLATE::difference_type operator+(TYPE_TEMPLATE const & lhs, CTYPE_TEPLATE const & rhs) {
 		return lhs.base() + rhs.base();
 	}
 	WRAP_TEMPLATE
-	inline TYPE_TEMPLATE operator+(typename TYPE_TEMPLATE::difference_type n, TYPE_TEMPLATE const & rhs) {
+	inline TYPE_TEMPLATE operator+(typename TYPE_TEMPLATE::difference_type n, CTYPE_TEPLATE const & rhs) {
 		rhs += n;
 		return rhs;
 	}
 	WRAP_TEMPLATE
-	inline TYPE_TEMPLATE operator-(typename TYPE_TEMPLATE::difference_type n, TYPE_TEMPLATE const & rhs) {
+	inline TYPE_TEMPLATE operator-(typename TYPE_TEMPLATE::difference_type n, CTYPE_TEPLATE const & rhs) {
 		rhs -= n;
 		return rhs;
 	}
