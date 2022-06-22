@@ -41,6 +41,12 @@ namespace ft {
 		return pair<T1, T2>(x, y);
 	}
 
+	template <typename T>
+	class less {
+		public:
+			bool operator()(const T &x, const T &y) const { return (x < y); }
+	};
+
 	// std::integral_constant wraps a static constant of specified type. It is the base class for the C++ type traits.
 	// The behavior of a program that adds specializations for integral_constant is undefined.
 	// This template is designed to provide compile-time constants as types.

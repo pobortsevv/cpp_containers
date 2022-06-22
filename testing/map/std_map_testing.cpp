@@ -80,28 +80,6 @@ void brackets() {
 
 }
 
-void at() {
-	std::cout << "at" << std::endl;
-	std::vector<std::pair<int, Test> > src;
-
-	for (int i = 0; i < 20; ++i) {
-		src.push_back(std::pair<int, Test>(i, i));
-		src.push_back(std::pair<int, Test>(i, i));
-	}
-
-	std::map<int, Test> def(src.begin(), src.end());
-	for (size_t i = 0; i < def.size(); ++i) {
-		std::cout << def.at(i).some_ << " ";
-	}
-	std::cout << std::endl;
-
-	try {
-		def.at(1000);
-	} catch (std::exception & e) {
-		std::cout << e.what() << std::endl;
-	}
-}
-
 void insert_val() {
 	std::cout << "insert_val" << std::endl;
 	std::map<int, Test>           def;
@@ -382,7 +360,6 @@ int main() {
 
 	// Element access
 	brackets();
-	at();
 	// ------------
 
 	//Modifiers

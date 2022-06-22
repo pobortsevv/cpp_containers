@@ -7,6 +7,6 @@ mkdir logs
 
 	clang++ -Wall -Wextra -Werror -I ../../impliment -I ../../utils -I ../ -fsanitize=address ./ft_map_testing.cpp -o logs/user_bin &&
 	./logs/user_bin > logs/user.output &&
-	clang++ -Wall -Wextra -Werror -I -fsanitize=address std_map_testing.cpp -o logs/bin &&
+	clang++ -Wall -Wextra -Werror -I ../ -fsanitize=address std_map_testing.cpp -o logs/bin &&
 	./logs/bin > logs/std.output &&
 	diff logs/user.output logs/std.output
