@@ -16,7 +16,6 @@
 # include "utility.hpp"
 # include "iterator.hpp"
 # include "reverse_iterator.hpp"
-
 /* -------------------------------------------------------------------------- */
 
 /* ------------------------------ FT Namespace ------------------------------ */
@@ -53,37 +52,37 @@ namespace ft {
 			explicit vector (size_type n, const value_type& val = value_type(),
 				const allocator_type& alloc = allocator_type())
 				: _alloc(alloc), _cap(n), _sz(n) {
-				this->_begin = this->_alloc.allocate(n);
-				for (size_type i = 0; i < n; i++)
-					this->_alloc.construct(this->_begin + i, val);
+					try {
+						this->_begin = this->_alloc.allocate(n);
+					} catch(std::exception & e) {
+						this->~vector();
+						throw vector::LengthError();
+					}
+
+					for (size_type i = 0; i < n; i++)
+						this->_alloc.construct(this->_begin + i, val);
 			}
 			template <class InputIterator>
 			explicit vector (InputIterator first, InputIterator last, const allocator_type& alloc = allocator_type(),
 				typename ft::enable_if<!std::numeric_limits<InputIterator>::is_specialized>::type* = 0)
 				: _alloc(alloc), _cap(last - first), _sz(last - first) {
 				difference_type diff = last - first;
-				try
-				{
+				try {
 					this->_begin = this->_alloc.allocate(diff);
-				}
-				catch(const std::exception& e)
-				{
+				} catch(const std::exception& e) {
 					this->~vector();
-					std::__throw_out_of_range("vector");
+					vector::LengthError();
 				}
 				for (difference_type i = 0; i < diff; i++)
 					this->_alloc.construct(this->_begin + i, *(first + i));
 			}
 			explicit vector (const vector& x)
 				: _begin(nullptr), _alloc(x._alloc), _cap(x._cap), _sz(x._sz) {
-				try
-				{
-					this->_alloc.allocate(x._cap);
-				}
-				catch(std::exception & e)
-				{
-					std::cout << e.what() << std::endl;
+				try {
+					this->_begin = this->_alloc.allocate(x._cap);
+				} catch(std::exception & e) {
 					this->~vector();
+					throw vector::LengthError();
 				}
 				for (size_type i = 0; i < x._sz; i++)
 					this->_alloc.construct(this->_begin + i, x[i]);
@@ -146,38 +145,27 @@ namespace ft {
 			size_type capacity(void) const {return this->_cap;}
 			bool empty(void) const {return this->_sz == 0 ? true : false;}
 			void resize(size_type n, value_type val = value_type()) {
-				if (this->_sz < n) {
-					if (n <= this->_cap) {
-						for (size_type i = this->_sz; i < n; i++)
-							this->_alloc.construct(this->_begin + i, val);
-						this->_sz = n;
-					} else {
-						pointer new_begin = this->_alloc.allocate(n * 2);
-						memmove(new_begin, this->_begin, sizeof(value_type) * this->_sz);
-						for (size_type i = this->_sz; i < n; i++)
-							this->_alloc.construct(new_begin + i, val);
-						for (size_type i = 0; i < this->_sz; i++)
-							this->_alloc.destroy(this->_begin + i);
-						this->_alloc.deallocate(this->_begin, this->_cap);
-						this->_cap = n * 2;
-						this->_sz = n;
-						this->_begin = new_begin;
-					}
-				}
-				else if (this->_sz >= n) {
-					for (size_type i = n; i < this->_sz; ++i)
-						this->_alloc.destroy(this->_begin + i);
-					this->_sz = n;
-				}
+				if (n > this->_cap)
+					reserve(2 * n);
+				while (n < this->_sz)
+					pop_back();
+				while (n > this->_sz)
+					push_back(val);
 			}
 			void reserve(size_type n) {
 				if (n > this->_cap) {
-					pointer new_begin = this->_alloc.allocate(n);
-					for (size_type i = 0; i < n; i++)
-						this->_alloc.construct(new_begin + i, this->_begin[i]);
-					for (size_type i = 0; i < this->_sz; i++)
-						this->_alloc.destroy(this->_begin + i);
-					this->_alloc.deallocate(this->_begin, this->_cap);
+					pointer new_begin;
+
+					try {
+						new_begin = this->_alloc.allocate(n);
+					} catch(std::exception & e) {
+						throw vector::LengthError();
+					}
+					
+					memmove(new_begin,this->_begin, sizeof(value_type) * this->_sz);
+					if (this->_begin != 0) {
+						this->_alloc.deallocate(this->_begin, this->_sz);
+					}
 					this->_cap = n;
 					this->_begin = new_begin;
 				}
@@ -195,12 +183,12 @@ namespace ft {
 			}
 			reference at(size_type n) {
 				if (n >= this->_sz)
-					std::__throw_out_of_range("vector");
+					vector::Out_of_range();
 				return this->_begin[n];
 			}
 			const_reference at(size_type n) const {
 				if (n >= this->_sz)
-					std::__throw_out_of_range("vector");
+					vector::Out_of_range();
 				return this->_begin[n];
 			}
 			reference front(void) {
@@ -226,57 +214,95 @@ namespace ft {
 			void assign(InputIterator first, InputIterator last, 
 				typename ft::enable_if<!std::numeric_limits<InputIterator>::is_specialized>::type* = 0) { // range
 				difference_type diff = last - first;
+
+				if (diff < 0) {
+					this->~vector();
+					throw vector::LengthError();
+				}
+
+				vector save(first, last);
+
 				clear();
-				reserve(last - first);
-				std::copy(first, last, this->_begin);
+				reserve(diff);
+				insert(begin(), save.begin(), save.end());
 				this->_sz = diff;
 			}
 			void assign(size_type n, const value_type& val) { // fill
+				value_type save(val);
 				clear();
 				reserve(n);
-				insert(begin(), n, val);
+				insert(begin(), n, save);
 			}
 			template <class InputIterator>
-			void insert (iterator position, InputIterator first, InputIterator last,
-				typename ft::enable_if<!std::numeric_limits<InputIterator>::is_specialized>::type* = 0) {
-				iterator pos = this->_begin + (position - begin());
+			void insert (iterator position, InputIterator first, InputIterator last, 
+			typename ft::enable_if<!std::numeric_limits<InputIterator>::is_specialized>::type* = 0) {
 				difference_type diff = last - first;
-				if (this->_sz + diff < this->_cap) {
-					if (pos.base() == (this->_begin + this->_sz))
-						std::copy(first, last, end());
-					else {
-						vector tmp(pos, end());
-						std::copy(tmp.begin(), tmp.end(), pos + diff);
-						std::copy(first, last, pos);
-					}
-				} else {
-					pointer new_begin = this->_alloc.allocate(this->_cap ? this->_cap * 2 : 1);
-					size_type old_index = 0;
-					size_type new_index = 0;
-					while (new_index < this->_sz + diff) {
-						if (this->_begin + new_index == position.base()) {
-							for (size_type i = 0; i < size_type(diff); i++, new_index++)
-								this->_alloc.construct(new_begin + new_index, *(first + i));
-							continue;
-						}
-						this->_alloc.construct(new_begin + new_index, *(this->_begin + old_index));
-						this->_alloc.destroy(this->_begin + old_index);
-						new_index++;
-						old_index++;
-					}
-					this->_alloc.deallocate(this->_begin, this->_cap);
-					this->_cap = this->_cap ? this->_cap * 2 : 1; 
-					this->_begin = new_begin;
+				difference_type before = position - begin();
+
+				// Incorrect iterators as arguments
+				if (diff <= 0) {
+					return;
 				}
+
+				// if true - add new elements(without allocation)
+				if (this->_cap >= this->_sz + diff) {
+					while (first != last) {
+						insert(position, *first);
+						first++;
+						position++;
+					}
+					return;
+				}
+
+				// else - allocate new memory
+				size_t new_cap = this->_cap * 2;
+				if (this->_sz + diff > new_cap) {
+					new_cap = this->_sz + diff;
+				}
+
+				pointer new_begin = this->_alloc.allocate(new_cap);
+
+				memmove(new_begin, this->_begin, sizeof(value_type) * before);
+				iterator new_position(new_begin + before);
+
+				for (; first != last; ++first, (void) ++new_position)
+					*new_position = *first;
+				memmove(new_begin + before + diff, this->_begin + before, sizeof(value_type) * (this->_sz - before));
+				if (this->_begin != 0) {
+					this->_alloc.deallocate(this->_begin, this->_cap);
+				}
+
 				this->_sz += diff;
+				this->_begin = new_begin;
+				this->_cap = new_cap;
 			}
-			void insert (iterator position, size_type n, const value_type& val) {
-				ft::vector<value_type> newPart(n, val);
-				this->insert(position, newPart.begin(), newPart.end());
+			iterator insert (iterator position, size_type n, const value_type& val) {
+				size_type before = position - begin();
+
+				if (this->_cap >= this->_sz + n) {
+					size_type last = (this->_sz == 0) ? 0 : this->_sz - 1;
+
+					for(size_type i = before; i < this->_sz; i++, last--)
+						memmove(this->_begin + last + n, this->_begin + last, sizeof(value_type));
+					
+					for(size_type i = 0; i < n; i++) 
+						this->_alloc.construct(this->_begin + before + i, val);
+					this->_sz += n;
+					return iterator(this->_begin + before);
+				}
+				size_type new_cap = this->_cap * 2;
+				
+				if (new_cap < this->_sz + n)
+					new_cap = this->_sz + n;
+				difference_type save_pos(position - begin());
+
+				reserve(new_cap);
+				insert(iterator(this->_begin + save_pos), n, val);
+				return iterator(this->_begin + before);
 			}
 			iterator insert (iterator position, const value_type& val) {
-				size_type before = position - this->begin();
-				this->insert(position, 1, val);
+				difference_type before = position - begin();
+				insert(position, 1, val);
 				return iterator(this->_begin + before);
 			}
 			void push_back(const value_type & val) {insert(end(), val);}
@@ -292,17 +318,24 @@ namespace ft {
 				ft::swap(this->_cap, x._cap);
 			}
 			iterator erase(iterator position) {
-				iterator pos = this->_begin + (position - begin());
-				std::copy(position + 1, end(), pos);
+				difference_type index = position - begin();
+
+				if (this->_sz == 0)
+					return iterator(this->_begin + index);
+
+				this->_alloc.destroy(this->_begin + index);
 				this->_sz--;
-				return pos;
+				std::memmove(this->_begin + index, this->_begin + index + 1, sizeof(value_type) * (this->_sz - index));
+				return iterator(this->_begin + index);
 			}
 			iterator erase(iterator first, iterator last) {
-				iterator pos = this->_begin + (first - begin());
-				difference_type diff = last - first;
-				std::copy(last, begin(), pos);
-				this->_sz -= diff;
-				return pos;
+				size_type start = first - begin();
+
+				while (first != last) {
+					erase(first);
+					--last;
+				}
+				return iterator(this->_begin + start);
 			}
 			void clear(void) {
 				if (this->_begin == nullptr)
@@ -319,6 +352,18 @@ namespace ft {
 			/* -------------------------------- Allocator ------------------------------- */
 			allocator_type get_allocator(void) const {return this->_alloc;}
 			/* -------------------------------------------------------------------------- */
+
+		class LengthError: public std::exception {
+			const char* what() const throw() {
+				return "vector";
+			}
+		};
+
+		class Out_of_range : public std::exception {
+			const char*  what() const throw() {
+				return "vector";
+			}
+		};
 	};
 
 	template <class T, class Alloc>

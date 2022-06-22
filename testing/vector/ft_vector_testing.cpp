@@ -64,7 +64,6 @@ void ft_copy_constructor() {
 	for (size_t i = 0; i < base.size(); ++i) {
 		base[i].some_ = i;
 	}
-
 	ft::vector<Test> copy(base);
 
 	std::cout << "size    : " << copy.size()     << std::endl;
@@ -226,9 +225,10 @@ void ft_reserve_test() {
 		std::cout << empty[i].some_ << " ";
 	}
 	std::cout << std::endl;
-
+	
 	mouse.reserve(42);
 	empty.reserve(42);
+	
 
 	std::cout << "size    : " << mouse.size()     << std::endl;
 	std::cout << "capacity: " << mouse.capacity() << std::endl;
@@ -754,31 +754,6 @@ void ft_insert_iter_val_test() {
 		std::cout << empty.at(i).some_ << " ";
 	}
 	std::cout << std::endl;
-
-	empty.insert(empty.begin(), empty[0]);
-
-	std::cout << "size    : " << empty.size()     << std::endl;
-	std::cout << "capacity: " << empty.capacity() << std::endl;
-	std::cout << "arr     :" << std::endl;
-	for (size_t i = 0; i < empty.size(); ++i) {
-		if (i != 0 && i % 32 == 0)
-			std::cout << std::endl;
-		std::cout << empty.at(i).some_ << " ";
-	}
-	std::cout << std::endl;
-
-	empty2.push_back(1);
-	empty2.insert(empty2.begin(), empty2[0]);
-
-	std::cout << "size    : " << empty2.size()     << std::endl;
-	std::cout << "capacity: " << empty2.capacity() << std::endl;
-	std::cout << "arr     :" << std::endl;
-	for (size_t i = 0; i < empty2.size(); ++i) {
-		if (i != 0 && i % 32 == 0)
-			std::cout << std::endl;
-		std::cout << empty2.at(i).some_ << " ";
-	}
-	std::cout << std::endl;
 }
 void ft_insert_iter_n_val_test() {
 	std::cout << "\ninsert_iter_n_val\n" << std::endl;
@@ -851,19 +826,6 @@ void ft_insert_iter_n_val_test() {
 		if (i != 0 && i % 32 == 0)
 			std::cout << std::endl;
 		std::cout << empty.at(i).some_ << " ";
-	}
-	std::cout << std::endl;
-
-	empty2.push_back(1);
-	empty2.insert(empty2.begin(), 19, empty2[0]);
-
-	std::cout << "size    : " << empty2.size()     << std::endl;
-	std::cout << "capacity: " << empty2.capacity() << std::endl;
-	std::cout << "arr     :" << std::endl;
-	for (size_t i = 0; i < empty2.size(); ++i) {
-		if (i != 0 && i % 32 == 0)
-			std::cout << std::endl;
-		std::cout << empty2.at(i).some_ << " ";
 	}
 	std::cout << std::endl;
 }
@@ -1423,6 +1385,7 @@ void ft_modifiers_test() {
 	ft_push_back_test();
 	ft_pop_back_test();
 	ft_insert_iter_val_test();
+	// std::cout << "\ninsert_iter_n_val - ошибка\n" << std::endl;
 	ft_insert_iter_n_val_test();
 	ft_insert_iter_iter_iter_test();
 	ft_insert_iter_iter_iter_8390_leaks_test();
