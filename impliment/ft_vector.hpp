@@ -71,7 +71,7 @@ namespace ft {
 					this->_begin = this->_alloc.allocate(diff);
 				} catch(const std::exception& e) {
 					this->~vector();
-					vector::LengthError();
+					throw vector::LengthError();
 				}
 				for (difference_type i = 0; i < diff; i++)
 					this->_alloc.construct(this->_begin + i, *(first + i));
@@ -145,22 +145,14 @@ namespace ft {
 			size_type capacity(void) const {return this->_cap;}
 			bool empty(void) const {return this->_sz == 0 ? true : false;}
 			void resize(size_type n, value_type val = value_type()) {
-				if (n > this->_cap)
-					reserve(2 * n);
-				while (n < this->_sz)
-					pop_back();
-				while (n > this->_sz)
-					push_back(val);
+				if (n <= this->_sz)
+					erase(iterator(this->_begin + n), end());
+				else
+					insert(iterator(this->_begin + this->_sz), n - this->_sz , val);
 			}
 			void reserve(size_type n) {
 				if (n > this->_cap) {
-					pointer new_begin;
-
-					try {
-						new_begin = this->_alloc.allocate(n);
-					} catch(std::exception & e) {
-						throw vector::LengthError();
-					}
+					pointer new_begin = this->_alloc.allocate(n);
 					
 					memmove(new_begin,this->_begin, sizeof(value_type) * this->_sz);
 					if (this->_begin != 0) {
@@ -174,38 +166,32 @@ namespace ft {
 
 			/* ----------------------------- Element access ----------------------------- */
 			reference operator[](size_type n) {
-				_LIBCPP_ASSERT(n < this->_sz, "vector[] index out of bounds");
 				return this->_begin[n];
 			}
 			const_reference operator[](size_type n) const {
-				_LIBCPP_ASSERT(n < this->_sz, "vector[] index out of bounds");
 				return this->_begin[n];
 			}
 			reference at(size_type n) {
 				if (n >= this->_sz)
-					vector::Out_of_range();
+					throw vector::Out_of_range();
 				return this->_begin[n];
 			}
 			const_reference at(size_type n) const {
 				if (n >= this->_sz)
-					vector::Out_of_range();
+					throw vector::Out_of_range();
 				return this->_begin[n];
 			}
 			reference front(void) {
-				_LIBCPP_ASSERT(!empty(), "front() called for empty vector");
 				return *this->_begin;
 			}
 			const_reference front(void) const {
-				_LIBCPP_ASSERT(!empty(), "front() called for empty vector");
 				return *this->_begin;
 			}
 			reference back(void) {
-				_LIBCPP_ASSERT(!empty(), "back() called for empty vector");
-				return *(this->_begin + (this->_sz) - 1);
+				return *(this->_begin + (this->_sz - 1));
 			}
 			const_reference back(void) const {
-				_LIBCPP_ASSERT(!empty(), "back() called for empty vector");
-				return *(this->_begin + (this->_sz) - 1);
+				return *(this->_begin + (this->_sz - 1));
 			}
 			/* -------------------------------------------------------------------------- */
 
@@ -342,9 +328,6 @@ namespace ft {
 					return ;
 				for (size_type i = 0; i < this->_sz; i++)
 					this->_alloc.destroy(this->_begin + i);
-				this->_alloc.deallocate(this->_begin, this->_cap);
-				this->_begin = nullptr;
-				this->_cap = 0;
 				this->_sz = 0;
 			}
 			/* -------------------------------------------------------------------------- */
